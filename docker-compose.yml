@@ -1,0 +1,25 @@
+# Project_database_with_Docker/docker-compose.yml
+version: '3.8'
+
+services:
+  jupyter:
+    # Build the image using the Dockerfile in the current directory
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Map port 8888 on the host to port 8888 in the container
+    ports:
+      - "8888:8888"
+    # Mount the local 'notebooks' and 'data' directories into the container's /app directory
+    # This ensures your notebooks and data persist even if the container is removed.
+    volumes:
+      - ./data:/app/data
+      - ./notebooks:/app/notebooks
+    # Command to run Jupyter Lab (or notebook if you prefer)
+    # --NotebookApp.token='': Disables token for easier local access (be cautious in production).
+    # --NotebookApp.ip='0.0.0.0': Makes Jupyter accessible from any IP address.
+    command: "jupyter lab --allow-root --ip='0.0.0.0' --port=8888 --no-browser --notebook-dir=/app"
+    # Restart the container if it exits unexpectedly
+    restart: always
+    # Optional: Set a container name for easier identification
+    container_name: my_jupyter_container
